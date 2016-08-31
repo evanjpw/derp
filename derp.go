@@ -54,17 +54,23 @@ func visit(path string, f os.FileInfo, err error) error {
 	return nil
 }
 
-func main() {
-	flag.Parse()
-	if flag.NArg() < 2 {
-		usage()
-	}
-	expr = flag.Arg(0)
-	root := flag.Arg(1)
+func checkPath(root string) {
 	err := filepath.Walk(root, visit)
 	if err != nil {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 		os.Exit(-1)
+	}
+}
+
+func main() {
+	flag.Parse()
+	narg := flag.NArg()
+	if narg < 2 {
+		usage()
+	}
+	expr = flag.Arg(0)
+	for i := 1; i < narg; i++ {
+		checkPath(flag.Arg(i))
 	}
 	os.Exit(0)
 }
